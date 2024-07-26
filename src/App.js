@@ -10,12 +10,14 @@ const App = () => {
     const fetchPokemons = async () => {
       const response = await axios.get('https://pokeapi.co/api/v2/pokemon?limit=151');
       const pokemonData = await Promise.all(
-        response.data.results.map(async (pokemon) => {
-          const pokemonRecord = await axios.get(pokemon.url);
-          return {
-            name: pokemonRecord.data.name,
-            image: pokemonRecord.data.sprites.front_default,
+        response.data.results.map(async (pokemon, index) => {
+          const pokemonId = index + 1;
+          const pokemonInfo = {
+            name: pokemon.name,
+            image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonId}.png`,
           };
+          console.log(pokemonInfo);
+          return pokemonInfo;
         })
       );
       setPokemons(pokemonData);
@@ -28,14 +30,14 @@ const App = () => {
   );
 
   return (
-    <div className="p-6">
-      <h1 className="text-4xl text-center mb-6">Pokémon</h1>
+    <div className="p-6 bg-gray-100 min-h-screen">
+      <h1 className="text-4xl text-center mb-6 font-bold text-gray-800">Pokemon</h1>
       <input
         type="text"
-        placeholder="Search Pokémon"
+        placeholder="Search Pokemon"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        className="block mx-auto mb-6 p-2 border rounded"
+        className="block mx-auto mb-6 p-2 border rounded w-2/3 text-center"
       />
       <div className="flex flex-wrap justify-center">
         {filteredPokemons.map((pokemon) => (
